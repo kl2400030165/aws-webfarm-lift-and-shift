@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>TechStore | AWS Web Farm</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f5f7fb;
+            color: #172033;
+        }
+
+        header {
+            background: #111827;
+            color: white;
+            padding: 18px 6%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .brand {
+            font-size: 24px;
+            font-weight: 800;
+        }
+
+        .brand span {
+            color: #f59e0b;
+        }
+
+        .badge {
+            background: #1d4ed8;
+            padding: 7px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #111827, #1e3a8a);
+            color: white;
+            padding: 55px 6%;
+        }
+
+        .hero h1 {
+            font-size: clamp(32px, 5vw, 58px);
+            margin-bottom: 15px;
+        }
+
+        .hero p {
+            max-width: 720px;
+            color: #dbeafe;
+            line-height: 1.7;
+            font-size: 17px;
+        }
+
+        .container {
+            width: 88%;
+            max-width: 1400px;
+            margin: 35px auto;
+        }
+
+        .section-title {
+            font-size: 25px;
+            margin-bottom: 20px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 18px;
+            margin-top: -25px;
+        }
+
+        .stat {
+            background: white;
+            padding: 24px;
+            border-radius: 14px;
+            box-shadow: 0 8px 25px rgba(15, 23, 42, 0.08);
+            border: 1px solid #e5e7eb;
+        }
+
+        .stat-label {
+            color: #64748b;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 27px;
+            font-weight: 800;
+        }
+
+        .healthy {
+            color: #16a34a;
+        }
+
+        .products {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .product {
+            background: white;
+            border-radius: 15px;
+            padding: 22px;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 5px 18px rgba(15, 23, 42, 0.06);
+        }
+
+        .product-icon {
+            width: 55px;
+            height: 55px;
+            border-radius: 12px;
+            background: #eff6ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 27px;
+            margin-bottom: 16px;
+        }
+
+        .product h3 {
+            margin-bottom: 7px;
+        }
+
+        .category {
+            color: #64748b;
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+
+        .price {
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .stock {
+            display: inline-block;
+            background: #dcfce7;
+            color: #166534;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .low-stock {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 35px;
+            box-shadow: 0 5px 18px rgba(15, 23, 42, 0.05);
+        }
+
+        .orders {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .orders th,
+        .orders td {
+            padding: 14px 10px;
+            border-bottom: 1px solid #e5e7eb;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        .orders th {
+            color: #475569;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        .status {
+            padding: 5px 9px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .delivered {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .shipped {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .processing {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .server-box {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 18px;
+            margin-top: 20px;
+        }
+
+        .server {
+            padding: 20px;
+            border: 1px solid #dbeafe;
+            border-radius: 12px;
+            background: #f8fbff;
+        }
+
+        .server-title {
+            font-weight: 800;
+            margin-bottom: 7px;
+        }
+
+        .server-status {
+            color: #16a34a;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        .server-az {
+            color: #64748b;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+
+        .identity {
+            margin-top: 14px;
+            color: #2563eb;
+            font-weight: 800;
+            font-size: 14px;
+        }
+
+        .migration {
+            background: #0f172a;
+            color: white;
+            border-radius: 16px;
+            padding: 30px;
+            margin-top: 35px;
+        }
+
+        .migration h2 {
+            margin-bottom: 20px;
+        }
+
+        .migration-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 15px;
+        }
+
+        .migration-item {
+            background: #1e293b;
+            padding: 18px;
+            border-radius: 12px;
+        }
+
+        .migration-label {
+            color: #94a3b8;
+            font-size: 12px;
+            margin-bottom: 7px;
+        }
+
+        .migration-value {
+            font-weight: bold;
+        }
+
+        .complete {
+            color: #4ade80;
+        }
+
+        footer {
+            background: #111827;
+            color: #94a3b8;
+            text-align: center;
+            padding: 30px;
+            margin-top: 50px;
+            font-size: 13px;
+        }
+
+        @media (max-width: 700px) {
+            .container {
+                width: 92%;
+            }
+
+            .orders {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+
+            header {
+                padding: 16px 5%;
+            }
+
+            .hero {
+                padding: 45px 5%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="brand">Tech<span>Store</span></div>
+    <div class="badge">AWS PRODUCTION DEMO</div>
+</header>
+
+<section class="hero">
+    <h1>Cloud-Powered Technology Store</h1>
+
+    <p>
+        A production-style demonstration application running on a
+        highly available AWS web farm powered by Amazon EC2,
+        Application Load Balancer and CloudWatch monitoring.
+    </p>
+</section>
+
+<div class="container">
+
+    <!-- STATISTICS -->
+
+    <div class="stats">
+
+        <div class="stat">
+            <div class="stat-label">Products</div>
+            <div class="stat-value">1,248</div>
+        </div>
+
+        <div class="stat">
+            <div class="stat-label">Orders Today</div>
+            <div class="stat-value">86</div>
+        </div>
+
+        <div class="stat">
+            <div class="stat-label">Monthly Revenue</div>
+            <div class="stat-value">₹4.82L</div>
+        </div>
+
+        <div class="stat">
+            <div class="stat-label">Application Status</div>
+            <div class="stat-value healthy">● Healthy</div>
+        </div>
+
+    </div>
+
+
+    <!-- PRODUCTS -->
+
+    <section class="card">
+
+        <h2 class="section-title">Featured Products</h2>
+
+        <div class="products">
+
+            <div class="product">
+                <div class="product-icon">💻</div>
+                <h3>ProBook 14</h3>
+                <div class="category">Laptop</div>
+                <div class="price">₹64,999</div>
+                <span class="stock">In Stock</span>
+            </div>
+
+            <div class="product">
+                <div class="product-icon">🖥️</div>
+                <h3>UltraBook X1</h3>
+                <div class="category">Laptop</div>
+                <div class="price">₹78,499</div>
+                <span class="stock">In Stock</span>
+            </div>
+
+            <div class="product">
+                <div class="product-icon">🖥️</div>
+                <h3>PixelView 27</h3>
+                <div class="category">Monitor</div>
+                <div class="price">₹21,999</div>
+                <span class="stock">In Stock</span>
+            </div>
+
+            <div class="product">
+                <div class="product-icon">🎮</div>
+                <h3>GameMaster RTX</h3>
+                <div class="category">Gaming</div>
+                <div class="price">₹1,24,999</div>
+                <span class="stock low-stock">Low Stock</span>
+            </div>
+
+            <div class="product">
+                <div class="product-icon">🎧</div>
+                <h3>SoundMax Pro</h3>
+                <div class="category">Audio</div>
+                <div class="price">₹7,999</div>
+                <span class="stock">In Stock</span>
+            </div>
+
+            <div class="product">
+                <div class="product-icon">🎵</div>
+                <h3>AirBuds Neo</h3>
+                <div class="category">Audio</div>
+                <div class="price">₹3,499</div>
+                <span class="stock">In Stock</span>
+            </div>
+
+            <div class="product">
+                <div class="product-icon">⌨️</div>
+                <h3>Mechanical Pro</h3>
+                <div class="category">Accessories</div>
+                <div class="price">₹4,499</div>
+                <span class="stock">In Stock</span>
+            </div>
+
+            <div class="product">
+                <div class="product-icon">🖱️</div>
+                <h3>Wireless Mouse X</h3>
+                <div class="category">Accessories</div>
+                <div class="price">₹1,299</div>
+                <span class="stock">In Stock</span>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ORDERS -->
+
+    <section class="card">
+
+        <h2 class="section-title">Recent Orders</h2>
+
+        <table class="orders">
+
+            <thead>
+                <tr>
+                    <th>Order</th>
+                    <th>Customer</th>
+                    <th>Product</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                <tr>
+                    <td>ORD-1048</td>
+                    <td>Rahul Kumar</td>
+                    <td>ProBook 14</td>
+                    <td>₹64,999</td>
+                    <td>
+                        <span class="status delivered">Delivered</span>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>ORD-1047</td>
+                    <td>Ananya Reddy</td>
+                    <td>AirBuds Neo</td>
+                    <td>₹3,499</td>
+                    <td>
+                        <span class="status shipped">Shipped</span>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>ORD-1046</td>
+                    <td>Arjun Singh</td>
+                    <td>PixelView 27</td>
+                    <td>₹21,999</td>
+                    <td>
+                        <span class="status processing">Processing</span>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>ORD-1045</td>
+                    <td>Priya Sharma</td>
+                    <td>SoundMax Pro</td>
+                    <td>₹7,999</td>
+                    <td>
+                        <span class="status delivered">Delivered</span>
+                    </td>
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </section>
+
+
+    <!-- WEB FARM -->
+
+    <section class="card">
+
+        <h2 class="section-title">AWS Web Farm Infrastructure</h2>
+
+        <div class="server-box">
+
+            <div class="server">
+
+                <div class="server-title">
+                    Web Server 01
+                </div>
+
+                <div class="server-status">
+                    ● Healthy
+                </div>
+
+                <div class="server-az">
+                    EC2 • ap-south-1a
+                </div>
+
+                <div class="identity">
+                    Request handled by this server
+                </div>
+
+            </div>
+
+
+            <div class="server">
+
+                <div class="server-title">
+                    Web Server 02
+                </div>
+
+                <div class="server-status">
+                    ● Healthy
+                </div>
+
+                <div class="server-az">
+                    EC2 • ap-south-1b
+                </div>
+
+                <div class="identity">
+                    Request handled by this server
+                </div>
+
+            </div>
+
+
+            <div class="server">
+
+                <div class="server-title">
+                    Web Server 03
+                </div>
+
+                <div class="server-status">
+                    ● Healthy
+                </div>
+
+                <div class="server-az">
+                    EC2 • ap-south-1a
+                </div>
+
+                <div class="identity">
+                    Request handled by this server
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- MIGRATION -->
+
+    <section class="migration">
+
+        <h2>Migration & Infrastructure Status</h2>
+
+        <div class="migration-grid">
+
+            <div class="migration-item">
+                <div class="migration-label">
+                    MIGRATION STRATEGY
+                </div>
+                <div class="migration-value">
+                    REHOST / LIFT-AND-SHIFT
+                </div>
+            </div>
+
+            <div class="migration-item">
+                <div class="migration-label">
+                    SOURCE
+                </div>
+                <div class="migration-value">
+                    SOURCE-WEB-01
+                </div>
+            </div>
+
+            <div class="migration-item">
+                <div class="migration-label">
+                    SERVICE
+                </div>
+                <div class="migration-value">
+                    AWS Application Migration Service
+                </div>
+            </div>
+
+            <div class="migration-item">
+                <div class="migration-label">
+                    REPLICATION
+                </div>
+                <div class="migration-value complete">
+                    100% COMPLETE
+                </div>
+            </div>
+
+            <div class="migration-item">
+                <div class="migration-label">
+                    DATA REPLICATED
+                </div>
+                <div class="migration-value">
+                    8 / 8 GiB
+                </div>
+            </div>
+
+            <div class="migration-item">
+                <div class="migration-label">
+                    MIGRATION WORKFLOW
+                </div>
+                <div class="migration-value">
+                    Ready for Testing
+                </div>
+            </div>
+
+            <div class="migration-item">
+                <div class="migration-label">
+                    LOAD BALANCER
+                </div>
+                <div class="migration-value">
+                    Application Load Balancer
+                </div>
+            </div>
+
+            <div class="migration-item">
+                <div class="migration-label">
+                    ACTIVE DEMO SERVERS
+                </div>
+                <div class="migration-value">
+                    3
+                </div>
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+<footer>
+    TechStore Cloud Web Farm • AWS Application Migration Service Project
+</footer>
+
+</body>
+</html>
